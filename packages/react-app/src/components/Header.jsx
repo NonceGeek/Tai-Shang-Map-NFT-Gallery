@@ -3,18 +3,14 @@ import React from "react";
 
 // displays a page header
 
-export default function Header({ link, title, subTitle }) {
+export default function Header() {
   return (
-    <a href={link} target="_blank" rel="noopener noreferrer">
-      <PageHeader title={title} subTitle={subTitle} style={{ cursor: "pointer" }} />
+    <a href="https://github.com/WeLightProject/Tai-Shang-Voxel-Handler" target="_blank" rel="noopener noreferrer">
+      <PageHeader
+        title="TaiShang Voxel Handler"
+        subTitle="handle voxel to html page, NFT and actual Model by 3D printer!"
+        style={{ cursor: "pointer" }}
+      />
     </a>
   );
 }
-
-Header.defaultProps = {
-  link: "https://github.com/austintgriffith/scaffold-eth",
-  // title: "🏗 scaffold-eth",
-  title: "Tai-Shang-DAO-NFT-Manager",
-  // subTitle: "forkable Ethereum dev stack focused on fast product iteration",
-  subTitle: "tai-shang-dao-nft-manager",
-};

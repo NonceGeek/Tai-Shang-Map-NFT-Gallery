@@ -65,7 +65,8 @@ module.exports = {
 
   networks: {
     localhost: {
-      url: "http://localhost:8545",
+      // url: "http://localhost:8545",
+      url: "http://124.251.110.211:6791",
       /*      
         notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
@@ -150,6 +151,36 @@ module.exports = {
       gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),
+      },
+    },
+    rinkebyArbitrum: {
+      url: "https://rinkeby.arbitrum.io/rpc",
+      gasPrice: 0,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l1: "rinkeby",
+      },
+    },
+    localArbitrum: {
+      url: "http://localhost:8547",
+      gasPrice: 0,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l1: "localArbitrumL1",
+      },
+    },
+    localArbitrumL1: {
+      url: "http://localhost:7545",
+      gasPrice: 0,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l2: "localArbitrum",
       },
     },
     optimism: {
@@ -238,6 +269,9 @@ module.exports = {
           optimizer: {
             enabled: true,
             runs: 200,
+            details: {
+              yul: false
+            }
           },
         },
       },

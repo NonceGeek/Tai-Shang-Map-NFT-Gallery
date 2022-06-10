@@ -1,4 +1,4 @@
-import { Button, Col, Menu, Row } from "antd";
+import { Button, Col, Menu, Row, message } from "antd";
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -29,10 +29,13 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, Query } from "./views";
+import { Home, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
+
+const axios = require('axios');
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -53,8 +56,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-// const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-const initialNetwork = NETWORKS.moonbeam; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.polygon; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -64,6 +66,9 @@ const USE_NETWORK_SELECTOR = false;
 
 const web3Modal = Web3ModalSetup();
 
+// backend for voxel_handler
+const serverUrl = "https://bewater.leeduckgo.com/voxel_handler/api/v1/place_order"; // elixir backend
+// const serverUrl = "http://localhost:4000/voxel_handler/api/v1/place_order"; // elixir backend
 // 🛰 providers
 const providers = [
   "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
@@ -144,7 +149,6 @@ function App(props) {
 
   // const contractConfig = useContractConfig();
 
-  // const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
   const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
 
   // Load in your local 📝 contract and read a value from it:
@@ -169,12 +173,58 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  // const purpose = useContractReader(readContracts, "Web3Dev", "purpose");
+  const purpose = useContractReader(readContracts, "YourContract", "purpose");
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
+  // keep track of a variable from the contract in the local React state:
+  const balance = useContractReader(readContracts, "TaiShangVoxel", "balanceOf", [address]);
+  console.log("🤗 balance:", balance);
+
+  // 📟 Listen for broadcast events
+  // const transferEvents = useEventListener(readContracts, "TaiShangVoxel", "Transfer", localProvider, 1);
+  // console.log("📟 Transfer events:", transferEvents);
+  //
+  // 🧠 This effect will update yourCollectibles by polling when your balance changes
+  //
+  const yourBalance = balance && balance.toNumber && balance.toNumber();
+  const [yourCollectibles, setYourCollectibles] = useState();
+
+  useEffect(() => {
+    const updateYourCollectibles = async () => {
+      const collectibleUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
+        try {
+          console.log("GEtting token index", tokenIndex);
+          const tokenId = await readContracts.TaiShangVoxel.tokenOfOwnerByIndex(address, tokenIndex);
+          console.log("tokenId", tokenId);
+          const tokenURI = await readContracts.TaiShangVoxel.tokenURI(tokenId);
+          const jsonManifestString = atob(tokenURI.substring(29))
+          console.log("tokenURI", tokenURI);
+          console.log("jsonManifestString", jsonManifestString);
+/*
+          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
+          console.log("ipfsHash", ipfsHash);
+          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+        */
+          try {
+            const jsonManifest = JSON.parse(jsonManifestString);
+            console.log("jsonManifest", jsonManifest);
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+          } catch (e) {
+            console.log(e);
+          }
+
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setYourCollectibles(collectibleUpdate.reverse());
+    };
+    updateYourCollectibles();
+  }, [address, yourBalance]);
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -246,6 +296,94 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
+  const isSigner = injectedProvider && injectedProvider.getSigner && injectedProvider.getSigner()._isSigner
+
+  const [ loading, setLoading ] = useState()
+
+  const [ result, setResult ] = useState()
+
+  let display = ""
+  let [msgToSign, setMsgToSign] = useState()
+  const [extraData, setExtraData] = useState('leeduckgo; 0x01; +86 13323232323; Beijing, China')
+
+  const handleSignDataChange = (e) => {
+    setExtraData(e.target.value)
+  }
+  if(result){
+    let possibleTxId = result.substr(-66)
+    console.log("possibleTxId",possibleTxId)
+    let extraLink = ""
+    if(possibleTxId.indexOf("0x")==0){
+      extraLink = <a href={blockExplorer+"tx/"+possibleTxId} target="_blank">view transaction on etherscan</a>
+    }else{
+      possibleTxId=""
+    }
+    display = (
+      <div style={{marginTop:32}}>
+        {result.replace(possibleTxId,"")} {extraLink}
+      </div>
+    )
+
+  } else if(isSigner){
+    display = (
+      <div>
+        <div>
+        <p>Add your information(name, nft token ID of which you want to print to 3D Model, tel and addr):</p>
+        <textarea
+            type="text"
+            value={extraData}
+            onChange={handleSignDataChange}
+            style={{ width: '25%', minHeight: '10px', marginTop: '5px' }}
+          ></textarea>
+        </div>
+      <Button loading={loading} style={{marginTop:32}} type="primary" onClick={async ()=>{
+
+        setLoading(true)
+        try{
+          msgToSign = await axios.get(serverUrl)
+          setMsgToSign(msgToSign)
+          console.log("msgToSign", msgToSign)
+          // TODO: change "DongciDaciDongciDaciDongciDaciDongciDaciDongciDaci" to an text area above the btn
+          let message = msgToSign.data + ";" + extraData;
+          if(message && message.length > 32){//<--- traffic escape hatch?
+            let currentLoader = setTimeout(()=>{setLoading(false)},4000)
+            // let message = msgToSign.data.replace("**ADDRESS**",address)
+            
+            let sig = await injectedProvider.send("personal_sign", [ message, address ]);
+            clearTimeout(currentLoader);
+            currentLoader = setTimeout(()=>{setLoading(false)},4000);
+            console.log("sig",sig)
+            const res = await axios.post(serverUrl, {
+              address: address,
+              message: message,
+              signature: sig,
+              unique_id: msgToSign.data,
+            })
+            clearTimeout(currentLoader)
+            setLoading(false)
+            console.log("RESULT:",res)
+            if(res.data){
+              setResult(res.data)
+            }
+          }else{
+            setLoading(false)
+            setResult("😅 Sorry, the server is overloaded. Please try again later. ⏳")
+          }
+        }catch(e){
+          message.error(' Sorry, the server is overloaded. 🧯🚒🔥');
+          console.log("FAILED TO GET...")
+          console.log("hhhh"+e)
+        }
+
+
+
+      }}>
+        <span style={{marginRight:8}}>🔏</span>  sign order info and submit
+      </Button>
+      </div>
+    )
+  }
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -259,14 +397,14 @@ function App(props) {
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
       <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/">
-          <Link to="/">App Home</Link>
+        <Menu.Item key="/Tai-Shang-Voxel-Handler">
+          <Link to="/Tai-Shang-Voxel-Handler">App Home</Link>
         </Menu.Item>
-        <Menu.Item key="/query">
-          <Link to="/query">Query Nft</Link>
+        <Menu.Item key="/Tai-Shang-Voxel-Handler/debug">
+          <Link to="/Tai-Shang-Voxel-Handler/debug">Debug Contracts</Link>
         </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
+        <Menu.Item key="/Tai-Shang-Voxel-Handler/play_with_voxel">
+          <Link to="/Tai-Shang-Voxel-Handler/play_with_voxel">Play With Voxel</Link>
         </Menu.Item>
         {/* <Menu.Item key="/hints">
           <Link to="/hints">Hints</Link>
@@ -283,16 +421,29 @@ function App(props) {
       </Menu>
 
       <Switch>
-        <Route exact path="/">
+        <Route exact path="/Tai-Shang-Voxel-Handler/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home readContracts={readContracts} writeContracts={writeContracts} tx={tx} />
+          <Home
+            isSigner={userSigner}
+            yourCollectibles={yourCollectibles}
+            loadWeb3Modal={loadWeb3Modal}
+            address={address}
+            blockExplorer={blockExplorer}
+            mainnetProvider={mainnetProvider}
+            tx={tx}
+            writeContracts={writeContracts}
+            readContracts={readContracts}
+            />
         </Route>
-        <Route exact path="/query">
-          <Query readContracts={readContracts} blockExplorer={blockExplorer} writeContracts={writeContracts} tx={tx} />
-        </Route>
-        <Route exact path="/debug">
+        <Route exact path="/Tai-Shang-Voxel-Handler/debug">
+          {/*
+                🎛 this scaffolding is full of commonly used components
+                this <Contract/> component will automatically parse your ABI
+                and give you a form to interact with it locally
+            */}
+
           <Contract
-            name="Web3Dev"
+            name="TaiShangVoxel"
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -301,58 +452,50 @@ function App(props) {
             contractConfig={contractConfig}
           />
         </Route>
-        {/* <Route path="/hints">
-          <Hints
-            address={address}
-            yourLocalBalance={yourLocalBalance}
-            mainnetProvider={mainnetProvider}
-            price={price}
-          />
+        <Route exact path="/Tai-Shang-Voxel-Handler/play_with_voxel">
+          <p></p>
+          <p></p>
+          <p>
+            {/*
+              todo: style good
+            */}
+            <img src="/magic-voxel.jpeg" style={{ zoom: '5%' }} alt="MagicVoxel"/>
+            Create Voxels! &nbsp;
+            <a href="https://www.youtube.com/watch?v=J5fK79E_RXE" target="_blank" rel="noreferrer">
+              Tutorial
+            </a>
+            &nbsp;/&nbsp;
+            <a href="https://ephtracy.github.io/#ss-carousel_ss" target="_blank" rel="noreferrer">
+              Download MagicVoxel
+            </a>
+          </p>
+          <p></p>
+          <p>↓</p>
+          <p></p>
+          <a href="https://arweave.net/7izfDARufPcQr0qNLYtVGaeZK1UlQM8B_2VFznNosMs" target="_blank" rel="noreferrer">
+            Upload Voxel File to Arweave by Permaweb Dropper on Arweave
+          </a>
+          <p></p>
+          <p>↓</p>
+          <p></p>
+          <a href="https://mirror.xyz/0x73c7448760517E3E6e416b2c130E3c6dB2026A1d/OzUFOPfgAcZQ4MY1eu3ce87SMULiccAFeeIcCWBfuAg" target="_blank" rel="noreferrer">
+            Voxel to HTML by Github-pages Using Template
+          </a>
+          <p></p>
+          <p>↓</p>
+          <p></p>
+          <a href="/" target="" rel="noreferrer">
+            Mint Voxel as an NFT!
+          </a>
+          <p></p>
+          <p>↓</p>
+          <p></p>
+          <p>
+            Make Voxel NFT from Virtual to Actual One by 3D Print! 
+          </p>
+          <br></br>
+          {display}
         </Route>
-        <Route path="/exampleui">
-          <ExampleUI
-            address={address}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
-            price={price}
-            tx={tx}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-            purpose={purpose}
-          />
-        </Route> */}
-        {/* <Route path="/mainnetdai">
-          <Contract
-            name="DAI"
-            customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-            signer={userSigner}
-            provider={mainnetProvider}
-            address={address}
-            blockExplorer="https://etherscan.io/"
-            contractConfig={contractConfig}
-            chainId={1}
-          /> */}
-        {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-          */}
-        {/* </Route>
-        <Route path="/subgraph">
-          <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
-          />
-        </Route> */}
       </Switch>
 
       <ThemeSwitch />

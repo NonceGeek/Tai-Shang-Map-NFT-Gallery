@@ -24,14 +24,6 @@ export const NETWORKS = {
     rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
     blockExplorer: "https://etherscan.io/",
   },
-  // add Moonbeam network
-  moonbeam: {
-    name: "moonbeam",
-    color: "#00b0ef",
-    chainId: 1284,
-    blockExplorer: "https://moonbeam.moonscan.io/",
-    rpcUrl: `https://rpc.api.moonbeam.network`,
-  },
   kovan: {
     name: "kovan",
     color: "#7003DD",
@@ -92,6 +84,35 @@ export const NETWORKS = {
     rpcUrl: "https://rpc-mumbai.maticvigil.com",
     faucet: "https://faucet.polygon.technology/",
     blockExplorer: "https://mumbai.polygonscan.com/",
+  },
+  localArbitrum: {
+    name: "localArbitrum",
+    color: "#50a0ea",
+    chainId: 153869338190755,
+    blockExplorer: "",
+    rpcUrl: `http://localhost:8547`,
+  },
+  localArbitrumL1: {
+    name: "localArbitrumL1",
+    color: "#50a0ea",
+    chainId: 44010,
+    blockExplorer: "",
+    rpcUrl: `http://localhost:7545`,
+  },
+  rinkebyArbitrum: {
+    name: "Arbitrum Testnet",
+    color: "#50a0ea",
+    chainId: 421611,
+    blockExplorer: "https://rinkeby-explorer.arbitrum.io/#/",
+    rpcUrl: `https://rinkeby.arbitrum.io/rpc`,
+  },
+  arbitrum: {
+    name: "Arbitrum",
+    color: "#50a0ea",
+    chainId: 42161,
+    blockExplorer: "https://explorer.arbitrum.io/#/",
+    rpcUrl: `https://arb1.arbitrum.io/rpc`,
+    gasPrice: 0,
   },
   localOptimismL1: {
     name: "localOptimismL1",
