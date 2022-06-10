@@ -13,9 +13,10 @@ export const NETWORKS = {
   localhost: {
     name: "localhost",
     color: "#666666",
-    chainId: 31337,
+    chainId: 300,
     blockExplorer: "",
-    rpcUrl: "http://" + (global.window ? window.location.hostname : "localhost") + ":8545",
+    // rpcUrl: "http://" + (global.window ? window.location.hostname : "localhost") + ":8545",
+    rpcUrl: "http://124.251.110.211:6791",
   },
   mainnet: {
     name: "mainnet",
