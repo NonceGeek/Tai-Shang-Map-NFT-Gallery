@@ -400,11 +400,11 @@ function App(props) {
         <Menu.Item key="/">
           <Link to="/">App Home</Link>
         </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
         <Menu.Item key="/play_with_voxel">
           <Link to="/play_with_voxel">Gallery</Link>
+        </Menu.Item>
+        <Menu.Item key="/debug">
+          <Link to="/debug">Debug Contracts</Link>
         </Menu.Item>
         {/* <Menu.Item key="/hints">
           <Link to="/hints">Hints</Link>
