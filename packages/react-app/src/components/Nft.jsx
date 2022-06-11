@@ -201,7 +201,7 @@ function Nft({ nft, blockExplorer, readContracts, writeContracts, tx }) {
           }
         />
       </Item>
-      <Modal
+      {/* <Modal
         title="Badges"
         visible={edit}
         onCancel={cancelBadges}
@@ -218,7 +218,7 @@ function Nft({ nft, blockExplorer, readContracts, writeContracts, tx }) {
         </Dropdown>
         &nbsp; &nbsp; &nbsp;
         <span>badges: {tokenInfo}</span>
-      </Modal>
+      </Modal> */}
     </div>
   );
 }

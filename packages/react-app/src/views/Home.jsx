@@ -91,7 +91,7 @@ function Home({
                   }
                 >
                   
-                  <a href={"https://opensea.io/assets/"+(readContracts && readContracts.TaiShangMapNFT && readContracts.TaiShangMapNFT.address)+"/"+item.id} target="_blank">
+                  {/* <a href={"https://opensea.io/assets/"+(readContracts && readContracts.TaiShangMapNFT && readContracts.TaiShangMapNFT.address)+"/"+item.id} target="_blank"> */}
                     <div>
                           <Nft
                             nft={item}
@@ -103,7 +103,7 @@ function Home({
                     </div>
                   {/* <img src={item.image} /> */}
                   {/* <iframe src={item.external_url} style={{width: "200px",height: "200px"}}></iframe> */}
-                  </a>
+                  {/* </a> */}
                   <div>{item.description}</div>
                 </Card>
 
