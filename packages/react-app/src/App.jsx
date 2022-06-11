@@ -198,9 +198,9 @@ function App(props) {
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.TaiShangVoxel.tokenOfOwnerByIndex(address, tokenIndex);
+          const tokenId = await readContracts.TaiShangMapNFT.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.TaiShangVoxel.tokenURI(tokenId);
+          const tokenURI = await readContracts.TaiShangMapNFT.tokenURI(tokenId);
           const jsonManifestString = atob(tokenURI.substring(29))
           console.log("tokenURI", tokenURI);
           console.log("jsonManifestString", jsonManifestString);

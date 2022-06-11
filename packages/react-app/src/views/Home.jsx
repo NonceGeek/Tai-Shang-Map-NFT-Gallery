@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Button, Card, List, Input } from "antd";
-import { Address, AddressInput } from "../components";
+import { Address, AddressInput, Nft, Gallery } from "../components";
 
 /**
  * web3 props can be passed from '../App.jsx' into your local view component for use
@@ -90,9 +90,19 @@ function Home({
                     </div>
                   }
                 >
-                  <a href={"https://opensea.io/assets/"+(readContracts && readContracts.TaiShangVoxel && readContracts.TaiShangVoxel.address)+"/"+item.id} target="_blank">
+                  
+                  <a href={"https://opensea.io/assets/"+(readContracts && readContracts.TaiShangMapNFT && readContracts.TaiShangMapNFT.address)+"/"+item.id} target="_blank">
+                    <div>
+                          <Nft
+                            nft={item}
+                            blockExplorer={blockExplorer}
+                            readContracts={readContracts}
+                            writeContracts={writeContracts}
+                            tx={tx}
+                          />
+                    </div>
                   {/* <img src={item.image} /> */}
-                  <iframe src={item.external_url} style={{width: "200px",height: "200px"}}></iframe>
+                  {/* <iframe src={item.external_url} style={{width: "200px",height: "200px"}}></iframe> */}
                   </a>
                   <div>{item.description}</div>
                 </Card>
@@ -118,7 +128,7 @@ function Home({
                   <Button
                     onClick={() => {
                       console.log("writeContracts", writeContracts);
-                      tx(writeContracts.TaiShangVoxel.transferFrom(address, transferToAddresses[id], id));
+                      tx(writeContracts.TaiShangMapNFT.transferFrom(address, transferToAddresses[id], id));
                     }}
                   >
                     Transfer
