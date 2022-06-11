@@ -180,7 +180,7 @@ function App(props) {
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "TaiShangVoxel", "balanceOf", [address]);
+  const balance = useContractReader(readContracts, "TaiShangMapNFT", "balanceOf", [address]);
   console.log("🤗 balance:", balance);
 
   // 📟 Listen for broadcast events
@@ -348,7 +348,7 @@ function App(props) {
           if(message && message.length > 32){//<--- traffic escape hatch?
             let currentLoader = setTimeout(()=>{setLoading(false)},4000)
             // let message = msgToSign.data.replace("**ADDRESS**",address)
-            
+
             let sig = await injectedProvider.send("personal_sign", [ message, address ]);
             clearTimeout(currentLoader);
             currentLoader = setTimeout(()=>{setLoading(false)},4000);
@@ -443,7 +443,7 @@ function App(props) {
             */}
 
           <Contract
-            name="TaiShangVoxel"
+            name="TaiShangMapNFT"
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -491,7 +491,7 @@ function App(props) {
           <p>↓</p>
           <p></p>
           <p>
-            Make Voxel NFT from Virtual to Actual One by 3D Print! 
+            Make Voxel NFT from Virtual to Actual One by 3D Print!
           </p>
           <br></br>
           {display}

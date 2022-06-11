@@ -67,10 +67,10 @@ module.exports = {
     localhost: {
       // url: "http://localhost:8545",
       url: "http://124.251.110.211:6791",
-      /*      
+      /*
         notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
-      
+
       */
     },
     rinkeby: {
@@ -287,7 +287,7 @@ module.exports = {
     ],
   },
   ovm: {
-    solcVersion: "0.7.6",
+    solcVersion: "^0.8.7",
   },
   namedAccounts: {
     deployer: {
