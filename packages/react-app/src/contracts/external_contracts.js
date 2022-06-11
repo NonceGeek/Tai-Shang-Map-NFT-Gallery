@@ -1,4 +1,4 @@
-const ERC20ABI = [
+const ERC721ABI = [
 	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
@@ -580,14 +580,14 @@ const ERC20ABI = [
 module.exports = {
   1: {
     contracts: {
-      DAI: {
-        address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-        abi: DAIABI,
+      ERC721: {
+        address: "0x0ACE27B4403E77Fd3FAC7B73Fc8eaB146C1ddcD3",
+        abi: ERC721ABI,
       },
-      UNI: {
-        address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
-        abi: ERC20ABI,
-      },
+      // UNI: {
+      //   address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+      //   abi: ERC20ABI,
+      // },
     },
   },
 };
