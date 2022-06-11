@@ -33,29 +33,29 @@ function Home({
       {/* Mint button */}
       <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
         <div style={{ margin: 10}}>
-          <span>Vox URI</span>
+          <span>Block Height</span>
           <Input
-            placeholder="eg. https://5ywn6daenz6poefpjkgs3c2vdgtzsk2vevam6aozkfzzzwrmgi.arweave.net/nFF3J4VB0BP9eHt35gdffGuwCXaHfXwtJl2K6u4GyA0"
+            placeholder="eg. 10086"
             onChange={e => {
-              setMintData({...mintData, uri: e.target.value});
+              setMintData({...mintData, block_height: e.target.value});
             }}
           />
         </div>
         <div style={{ margin: 10}}>
-          <span>Github Pages URL</span>
+          <span>Token Info</span>
           <Input
-            placeholder="eg. https://welightproject.github.io/voxel-viewer-page/"
+            placeholder="eg. Profile"
             onChange={e => {
-              setMintData({...mintData, url: e.target.value});
+              setMintData({...mintData, token_info: e.target.value});
             }}
           />
         </div>
         <div style={{ margin: 10}}>
-          <span>Commit Hash</span>
+          <span>Map Type</span>
           <Input
-            placeholder="eg. e070f55ef44f41661a65048c0fd30af33e20ff7c"
+            placeholder="eg. Gallery"
             onChange={e => {
-              setMintData({...mintData, commit: e.target.value});
+              setMintData({...mintData, map_type: e.target.value});
             }}
           />
         </div>
@@ -63,7 +63,7 @@ function Home({
           <Button
             type={"primary"}
             onClick={() => {
-              tx(writeContracts.TaiShangVoxel.mint(mintData.uri, mintData.url, mintData.commit));
+              tx(writeContracts.TaiShangMapNFT.claim(mintData.block_height, mintData.token_info, mintData.map_type));
             }}
           >
             MINT
