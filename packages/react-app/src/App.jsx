@@ -29,7 +29,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
+import { Home, Gallery, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -400,8 +400,8 @@ function App(props) {
         <Menu.Item key="/">
           <Link to="/">App Home</Link>
         </Menu.Item>
-        <Menu.Item key="/play_with_voxel">
-          <Link to="/play_with_voxel">Gallery</Link>
+        <Menu.Item key="/gallery">
+          <Link to="/gallery">Gallery</Link>
         </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
@@ -452,49 +452,8 @@ function App(props) {
             contractConfig={contractConfig}
           />
         </Route>
-        <Route exact path="/play_with_voxel">
-          <p></p>
-          <p></p>
-          <p>
-            {/*
-              todo: style good
-            */}
-            <img src="/magic-voxel.jpeg" style={{ zoom: '5%' }} alt="MagicVoxel"/>
-            Create Voxels! &nbsp;
-            <a href="https://www.youtube.com/watch?v=J5fK79E_RXE" target="_blank" rel="noreferrer">
-              Tutorial
-            </a>
-            &nbsp;/&nbsp;
-            <a href="https://ephtracy.github.io/#ss-carousel_ss" target="_blank" rel="noreferrer">
-              Download MagicVoxel
-            </a>
-          </p>
-          <p></p>
-          <p>↓</p>
-          <p></p>
-          <a href="https://arweave.net/7izfDARufPcQr0qNLYtVGaeZK1UlQM8B_2VFznNosMs" target="_blank" rel="noreferrer">
-            Upload Voxel File to Arweave by Permaweb Dropper on Arweave
-          </a>
-          <p></p>
-          <p>↓</p>
-          <p></p>
-          <a href="https://mirror.xyz/0x73c7448760517E3E6e416b2c130E3c6dB2026A1d/OzUFOPfgAcZQ4MY1eu3ce87SMULiccAFeeIcCWBfuAg" target="_blank" rel="noreferrer">
-            Voxel to HTML by Github-pages Using Template
-          </a>
-          <p></p>
-          <p>↓</p>
-          <p></p>
-          <a href="/" target="" rel="noreferrer">
-            Mint Voxel as an NFT!
-          </a>
-          <p></p>
-          <p>↓</p>
-          <p></p>
-          <p>
-            Make Voxel NFT from Virtual to Actual One by 3D Print!
-          </p>
-          <br></br>
-          {display}
+        <Route exact path="/gallery">
+          <Gallery readContracts={readContracts} writeContracts={writeContracts} tx={tx} />
         </Route>
       </Switch>
 
