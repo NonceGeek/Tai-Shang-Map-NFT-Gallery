@@ -404,7 +404,7 @@ function App(props) {
           <Link to="/debug">Debug Contracts</Link>
         </Menu.Item>
         <Menu.Item key="/play_with_voxel">
-          <Link to="/play_with_voxel">Play With Voxel</Link>
+          <Link to="/play_with_voxel">Gallery</Link>
         </Menu.Item>
         {/* <Menu.Item key="/hints">
           <Link to="/hints">Hints</Link>
