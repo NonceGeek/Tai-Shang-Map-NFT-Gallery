@@ -5,10 +5,10 @@ import React from "react";
 
 export default function Header() {
   return (
-    <a href="https://github.com/WeLightProject/Tai-Shang-Voxel-Handler" target="_blank" rel="noopener noreferrer">
+    <a href="https://github.com/WeLightProject/Tai-Shang-NFT-Gallery" target="_blank" rel="noopener noreferrer">
       <PageHeader
-        title="TaiShang Voxel Handler"
-        subTitle="handle voxel to html page, NFT and actual Model by 3D printer!"
+        title="Tai-Shang-NFT-Gallery"
+        subTitle="Claim Map NFT"
         style={{ cursor: "pointer" }}
       />
     </a>
